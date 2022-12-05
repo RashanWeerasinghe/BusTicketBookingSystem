@@ -1,0 +1,86 @@
+package com.example.busbookingsystem.dto.response;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
+public class PassengerTicketDTO {
+    private  int ticketId;
+
+    private String startHolt;
+    private String endHolt;
+    private int totalPrice;
+
+    private int ticketCount;
+
+    private ArrayList<String> noOfSheets;
+
+
+    public PassengerTicketDTO() {
+    }
+
+    public PassengerTicketDTO(String startHolt, String endHolt, int ticketCount) {
+
+        this.startHolt = startHolt;
+        this.endHolt = endHolt;
+        this.ticketCount = ticketCount;
+    }
+
+    public int getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(int ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public ArrayList<String> getNoOfSheets(ArrayList<String> noOfSheets) {
+        return this.noOfSheets;
+    }
+
+    public void setNoOfSheets(ArrayList<String> noOfSheets) {
+        this.noOfSheets = noOfSheets;
+    }
+
+    public String getStartHolt() {
+        return startHolt;
+    }
+
+    public void setStartHolt(String startHolt) {
+        this.startHolt = startHolt;
+    }
+
+    public String getEndHolt() {
+        return endHolt;
+    }
+
+    public void setEndHolt(String endHolt) {
+        this.endHolt = endHolt;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+    public int getTicketCount() {
+        return ticketCount;
+    }
+
+    public void setTicketCount(int ticketCount) {
+        this.ticketCount = ticketCount;
+    }
+
+    @Override
+    public String toString() {
+        return "PassengerTicketDTO{" +
+                "ticketId=" + ticketId +
+                ", startHolt='" + startHolt + '\'' +
+                ", endHolt='" + endHolt + '\'' +
+                ", totalPrice=" + totalPrice +
+                ", ticketCount=" + ticketCount +
+                ", noOfSheets=" + noOfSheets +
+                '}';
+    }
+}
