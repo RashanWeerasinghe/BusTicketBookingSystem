@@ -7,6 +7,7 @@ public class PassengerAvailabilityDTO {
     private String endHolt;
     private int ticketCount;
 
+
     public PassengerAvailabilityDTO() {
     }
 

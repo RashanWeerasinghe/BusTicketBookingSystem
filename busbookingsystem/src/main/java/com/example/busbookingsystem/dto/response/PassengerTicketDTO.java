@@ -1,18 +1,18 @@
 package com.example.busbookingsystem.dto.response;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class PassengerTicketDTO {
-    private  int ticketId;
+    private  UUID ticketId;
 
     private String startHolt;
     private String endHolt;
+
     private int totalPrice;
 
     private int ticketCount;
 
-    private ArrayList<String> noOfSheets;
+    private String noOfSheets;
 
 
     public PassengerTicketDTO() {
@@ -25,21 +25,15 @@ public class PassengerTicketDTO {
         this.ticketCount = ticketCount;
     }
 
-    public int getTicketId() {
+    public UUID getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(int ticketId) {
+    public void setTicketId(UUID ticketId) {
         this.ticketId = ticketId;
     }
 
-    public ArrayList<String> getNoOfSheets(ArrayList<String> noOfSheets) {
-        return this.noOfSheets;
-    }
 
-    public void setNoOfSheets(ArrayList<String> noOfSheets) {
-        this.noOfSheets = noOfSheets;
-    }
 
     public String getStartHolt() {
         return startHolt;
@@ -72,6 +66,14 @@ public class PassengerTicketDTO {
         this.ticketCount = ticketCount;
     }
 
+    public String getNoOfSheets() {
+        return noOfSheets;
+    }
+
+    public void setNoOfSheets(String noOfSheets) {
+        this.noOfSheets = noOfSheets;
+    }
+
     @Override
     public String toString() {
         return "PassengerTicketDTO{" +
@@ -80,7 +82,7 @@ public class PassengerTicketDTO {
                 ", endHolt='" + endHolt + '\'' +
                 ", totalPrice=" + totalPrice +
                 ", ticketCount=" + ticketCount +
-                ", noOfSheets=" + noOfSheets +
+                ", noOfSheets='" + noOfSheets + '\'' +
                 '}';
     }
 }

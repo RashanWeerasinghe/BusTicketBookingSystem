@@ -4,6 +4,7 @@ import com.example.busbookingsystem.dto.PassengerDTO;
 import com.example.busbookingsystem.dto.request.PassengerReserveTicketDTO;
 import com.example.busbookingsystem.dto.response.PassengerAvailabilityDTO;
 import com.example.busbookingsystem.dto.response.PassengerTicketDTO;
+import com.example.busbookingsystem.exception.NotFoundException;
 import com.example.busbookingsystem.service.PassengerService;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.springframework.stereotype.Service;
@@ -17,101 +18,90 @@ public class PassengerServiceIMPL implements PassengerService {
     private static  HashMap<String, String>GoBusMap = new HashMap<String, String>();
     private static  HashMap<String, String>ReturnBusMap = new HashMap<String, String>();
     @Override
-    public PassengerAvailabilityDTO checkAvailability(String start, String end, int x) {
+    public PassengerAvailabilityDTO checkAvailability(String start, String end, int x) throws NotFoundException {
         PassengerAvailabilityDTO passengerAvailabilityDTO=new PassengerAvailabilityDTO();
 
 
-//       if(BusMap.isEmpty()){
-//        for(int i=1;i<=10;i++){
-//            for(int j=1;j<=4;j++){
-//                switch(j){
-//                    case 1: String x1=String.valueOf(i)+"A";BusMap.put(x1,"No");break;
-//                    case 2:String  x2=String.valueOf(i)+"B";BusMap.put(x2,"No");break;
-//                    case 3:String  x3=String.valueOf(i)+"C";BusMap.put(x3,"No");break;
-//                    case 4:String  x4=String.valueOf(i)+"D";BusMap.put(x4,"No");break;
-//                    default:break;
-//                }
-//            }
-//
-//        }
-//        }
 
+        if(start.equals("A")||start.equals("B")||start.equals("C")||start.equals("D")&&
+        end.equals("A")||end.equals("B")||end.equals("C")||end.equals("D")) {
 
-        if(start.charAt(0)<end.charAt(0)){
-            checkBusMapEmpty(GoBusMap);
-            String Holt=start+end;
+            if (start.charAt(0) < end.charAt(0)) {
+                checkBusMapEmpty(GoBusMap);
+                String Holt = start + end;
 
-            int count=0;
-            for(int i=0;i<=10;i++){
-                for(int j=1;j<=4;j++){
-                    if(GoBusMap.get(String.valueOf(i)+"A")=="No")
-                        count++;
-                    else if(GoBusMap.get(String.valueOf(i)+"B")=="No")
-                        count++;
-                    else if(GoBusMap.get(String.valueOf(i)+"C")=="No")
-                        count++;
-                    else if(GoBusMap.get(String.valueOf(i)+"D")=="No")
-                        count++;
+                int count = 0;
+                for (int i = 0; i <= 10; i++) {
+                    for (int j = 1; j <= 4; j++) {
+                        if (GoBusMap.get(String.valueOf(i) + "A") == "No")
+                            count++;
+                        else if (GoBusMap.get(String.valueOf(i) + "B") == "No")
+                            count++;
+                        else if (GoBusMap.get(String.valueOf(i) + "C") == "No")
+                            count++;
+                        else if (GoBusMap.get(String.valueOf(i) + "D") == "No")
+                            count++;
+                    }
                 }
+
+
+                if (count >= x) {
+
+                    int totalPrice = getTotalPrice(x, Holt);
+
+                    passengerAvailabilityDTO.setStartHolt(start);
+                    passengerAvailabilityDTO.setEndHolt(end);
+                    passengerAvailabilityDTO.setTicketCount(x);
+                    passengerAvailabilityDTO.setTotalPrice(totalPrice);
+                } else {
+                    System.out.println("not available " + x + " sheets");
+                }
+
+
+                return passengerAvailabilityDTO;
+            } else {
+                checkBusMapEmpty(ReturnBusMap);
+                String Holt = start + end;
+
+                int count = 0;
+                for (int i = 0; i <= 10; i++) {
+                    for (int j = 1; j <= 4; j++) {
+                        if (ReturnBusMap.get(String.valueOf(i) + "A") == "No")
+                            count++;
+                        else if (ReturnBusMap.get(String.valueOf(i) + "B") == "No")
+                            count++;
+                        else if (ReturnBusMap.get(String.valueOf(i) + "C") == "No")
+                            count++;
+                        else if (ReturnBusMap.get(String.valueOf(i) + "D") == "No")
+                            count++;
+                    }
+                }
+
+                if (count >= x) {
+
+                    int totalPrice = getTotalPrice(x, Holt);
+
+                    passengerAvailabilityDTO.setStartHolt(start);
+                    passengerAvailabilityDTO.setEndHolt(end);
+                    passengerAvailabilityDTO.setTicketCount(x);
+                    passengerAvailabilityDTO.setTotalPrice(totalPrice);
+                } else {
+                    System.out.println("not available " + x + " sheets");
+                }
+
+
+                return passengerAvailabilityDTO;
             }
 
 
-            if(count>=x){
-
-                int totalPrice = getTotalPrice(x, Holt);
-
-                passengerAvailabilityDTO.setStartHolt(start);
-                passengerAvailabilityDTO.setEndHolt(end);
-                passengerAvailabilityDTO.setTicketCount(x);
-                passengerAvailabilityDTO.setTotalPrice(totalPrice);
-            }else{
-                System.out.println("not available "+x+" sheets");
-            }
-
-
-            return passengerAvailabilityDTO;
         }else{
-            checkBusMapEmpty(ReturnBusMap);
-            String Holt=start+end;
-
-            int count=0;
-            for(int i=0;i<=10;i++){
-                for(int j=1;j<=4;j++){
-                    if(ReturnBusMap.get(String.valueOf(i)+"A")=="No")
-                        count++;
-                    else if(ReturnBusMap.get(String.valueOf(i)+"B")=="No")
-                        count++;
-                    else if(ReturnBusMap.get(String.valueOf(i)+"C")=="No")
-                        count++;
-                    else if(ReturnBusMap.get(String.valueOf(i)+"D")=="No")
-                        count++;
-                }
-            }
-
-
-            if(count>=x){
-
-                int totalPrice = getTotalPrice(x, Holt);
-
-                passengerAvailabilityDTO.setStartHolt(start);
-                passengerAvailabilityDTO.setEndHolt(end);
-                passengerAvailabilityDTO.setTicketCount(x);
-                passengerAvailabilityDTO.setTotalPrice(totalPrice);
-            }else{
-                System.out.println("not available "+x+" sheets");
-            }
-
-
-            return passengerAvailabilityDTO;
+            throw new NotFoundException("Not found location");
         }
-
-
-
 
     }
 
     @Override
-    public PassengerTicketDTO passengerReserveTicket(PassengerReserveTicketDTO passengerReserveTicketDTO) {
+    public PassengerTicketDTO passengerReserveTicket(PassengerReserveTicketDTO passengerReserveTicketDTO)  throws NotFoundException {
 
         PassengerTicketDTO passengerTicketDTO=new PassengerTicketDTO(
                 passengerReserveTicketDTO.getStartHolt(),
@@ -119,218 +109,170 @@ public class PassengerServiceIMPL implements PassengerService {
                 passengerReserveTicketDTO.getTicketCount()
         );
 
-//        if(BusMap.isEmpty()){
-//            for(int i=1;i<=10;i++){
-//                for(int j=1;j<=4;j++){
-//                    switch(j){
-//                        case 1: String x1=String.valueOf(i)+"A";BusMap.put(x1,"No");break;
-//                        case 2:String  x2=String.valueOf(i)+"B";BusMap.put(x2,"No");break;
-//                        case 3:String  x3=String.valueOf(i)+"C";BusMap.put(x3,"No");break;
-//                        case 4:String  x4=String.valueOf(i)+"D";BusMap.put(x4,"No");break;
-//                        default:break;
-//                    }
-//                }
-//
-//            }
-//        }
-        if(passengerTicketDTO.getStartHolt().charAt(0)<passengerTicketDTO.getEndHolt().charAt(0)) {
-            checkBusMapEmpty(GoBusMap);
+        if(passengerTicketDTO.getStartHolt().equals("A")||passengerTicketDTO.getStartHolt().equals("B")
+                ||passengerTicketDTO.getStartHolt().equals("C")
+                ||passengerTicketDTO.getStartHolt().equals("D")&&
+                passengerTicketDTO.getEndHolt().equals("A")
+                ||passengerTicketDTO.getEndHolt().equals("B")
+                ||passengerTicketDTO.getEndHolt().equals("C")
+                ||passengerTicketDTO.getEndHolt().equals("D")) {
+
+            if (passengerTicketDTO.getStartHolt().charAt(0) < passengerTicketDTO.getEndHolt().charAt(0)) {
+                checkBusMapEmpty(GoBusMap);
 
 
+                int count = 0;
+                ArrayList<String> noOfSheets = new ArrayList<String>();
 
-            int count = 0;
-            ArrayList<String> noOfSheets = new ArrayList<String>();
+                int x = passengerTicketDTO.getTicketCount();
+                String Holt = passengerTicketDTO.getStartHolt() + passengerTicketDTO.getEndHolt();
+                int totalPrice;
 
-            int x=passengerTicketDTO.getTicketCount();
-            String Holt=passengerTicketDTO.getStartHolt()+passengerTicketDTO.getEndHolt();
-            int totalPrice;
+                int countFree = 0;
 
-            int countFree=0;
-
-            for (String i : GoBusMap.keySet()) {
-                if(GoBusMap.get(i)=="No")
-                    countFree++;
-            }
-
-
-            System.out.println("count freee:"+countFree);
-
-
-            if(countFree>=x){
-
-                for(int i=0;i<=10;i++){
-                    if(count== passengerTicketDTO.getTicketCount())
-                        break;
-                    for(int j=1;j<=4;j++){
-
-                        if(count== passengerTicketDTO.getTicketCount())
-                            break;
-
-
-                        if(GoBusMap.get(String.valueOf(i)+"A")=="No") {
-                            GoBusMap.put(String.valueOf(i) + "A", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "A");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one1");
-                        } else if (GoBusMap.get(String.valueOf(i)+"B")=="No") {
-                            GoBusMap.put(String.valueOf(i) + "B", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "B");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one2");
-                        }else if(GoBusMap.get(String.valueOf(i)+"C")=="No"){
-                            GoBusMap.put(String.valueOf(i) + "C", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "C");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one2");
-                        } else if (GoBusMap.get(String.valueOf(i)+"D")=="No") {
-                            GoBusMap.put(String.valueOf(i) + "D", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "D");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one3");
-                        }
-
-                    }
+                for (String i : GoBusMap.keySet()) {
+                    if (GoBusMap.get(i) == "No")
+                        countFree++;
                 }
 
 
+                System.out.println("count freee:" + countFree);
 
 
+                if (countFree >= x) {
 
-                totalPrice = getTotalPrice(x, Holt);
+                    for (int i = 0; i <= 10; i++) {
+                        if (count == passengerTicketDTO.getTicketCount())
+                            break;
+                        for (int j = 1; j <= 4; j++) {
 
-                passengerTicketDTO.setTotalPrice(totalPrice);
-                //passengerTicketDTO.setTicketId(UUID.randomUUID());
-            }else{
-                System.out.println(count + " not available "+countFree+" sheets"+x);
+                            if (count == passengerTicketDTO.getTicketCount())
+                                break;
+
+
+                            if (GoBusMap.get(String.valueOf(i) + "A") == "No") {
+                                GoBusMap.put(String.valueOf(i) + "A", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "A");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one1");
+                            } else if (GoBusMap.get(String.valueOf(i) + "B") == "No") {
+                                GoBusMap.put(String.valueOf(i) + "B", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "B");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one2");
+                            } else if (GoBusMap.get(String.valueOf(i) + "C") == "No") {
+                                GoBusMap.put(String.valueOf(i) + "C", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "C");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one2");
+                            } else if (GoBusMap.get(String.valueOf(i) + "D") == "No") {
+                                GoBusMap.put(String.valueOf(i) + "D", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "D");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one3");
+                            }
+
+                        }
+                    }
+
+                    return getPassengerTicketDTO(passengerTicketDTO, noOfSheets, x, Holt);
+                } else {
+                    throw new NotFoundException("No Ticket Available");
+                }
+
+
+            } else {
+                checkBusMapEmpty(ReturnBusMap);
+
+
+                int count = 0;
+                ArrayList<String> noOfSheets = new ArrayList<String>();
+
+                int x = passengerTicketDTO.getTicketCount();
+                String Holt = passengerTicketDTO.getStartHolt() + passengerTicketDTO.getEndHolt();
+                int totalPrice;
+
+                int countFree = 0;
+
+                for (String i : ReturnBusMap.keySet()) {
+                    if (ReturnBusMap.get(i) == "No")
+                        countFree++;
+                }
+
+
+                System.out.println("count freee:" + countFree);
+
+
+                if (countFree >= x) {
+
+                    for (int i = 0; i <= 10; i++) {
+                        if (count == passengerTicketDTO.getTicketCount())
+                            break;
+                        for (int j = 1; j <= 4; j++) {
+
+                            if (count == passengerTicketDTO.getTicketCount())
+                                break;
+
+
+                            if (ReturnBusMap.get(String.valueOf(i) + "A") == "No") {
+                                ReturnBusMap.put(String.valueOf(i) + "A", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "A");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one1");
+                            } else if (ReturnBusMap.get(String.valueOf(i) + "B") == "No") {
+                                ReturnBusMap.put(String.valueOf(i) + "B", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "B");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one2");
+                            } else if (ReturnBusMap.get(String.valueOf(i) + "C") == "No") {
+                                ReturnBusMap.put(String.valueOf(i) + "C", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "C");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one2");
+                            } else if (ReturnBusMap.get(String.valueOf(i) + "D") == "No") {
+                                ReturnBusMap.put(String.valueOf(i) + "D", "Yes");
+                                noOfSheets.add(String.valueOf(i) + "D");
+                                //passengerTicketDTO.setNoOfSheets(noOfSheets);
+                                count++;
+                                System.out.println("one3");
+                            }
+
+                        }
+                    }
+
+                    return getPassengerTicketDTO(passengerTicketDTO, noOfSheets, x, Holt);
+                } else {
+                    throw new NotFoundException("No Ticket Available");
+                }
+
+
             }
-
-
-
-
-
-//        for(int i=0;i<=10;i++){
-//            for(int j=1;j<=4;j++){
-//                if(BusMap.get(String.valueOf(i)+"A")=="No")
-//                    countFree++;
-//                else if(BusMap.get(String.valueOf(i)+"B")=="No")
-//                    countFree++;
-//                else if(BusMap.get(String.valueOf(i)+"C")=="No")
-//                    countFree++;
-//                else if(BusMap.get(String.valueOf(i)+"D")=="No")
-//                    countFree++;
-//            }
-//        }
-
-
-
-
-
-
-            return passengerTicketDTO;
         }else{
-            checkBusMapEmpty(ReturnBusMap);
-
-
-
-            int count = 0;
-            ArrayList<String> noOfSheets = new ArrayList<String>();
-
-            int x=passengerTicketDTO.getTicketCount();
-            String Holt=passengerTicketDTO.getStartHolt()+passengerTicketDTO.getEndHolt();
-            int totalPrice;
-
-            int countFree=0;
-
-            for (String i : ReturnBusMap.keySet()) {
-                if(ReturnBusMap.get(i)=="No")
-                    countFree++;
-            }
-
-
-            System.out.println("count freee:"+countFree);
-
-
-            if(countFree>=x){
-
-                for(int i=0;i<=10;i++){
-                    if(count== passengerTicketDTO.getTicketCount())
-                        break;
-                    for(int j=1;j<=4;j++){
-
-                        if(count== passengerTicketDTO.getTicketCount())
-                            break;
-
-
-                        if(ReturnBusMap.get(String.valueOf(i)+"A")=="No") {
-                            ReturnBusMap.put(String.valueOf(i) + "A", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "A");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one1");
-                        } else if (ReturnBusMap.get(String.valueOf(i)+"B")=="No") {
-                            ReturnBusMap.put(String.valueOf(i) + "B", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "B");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one2");
-                        }else if(ReturnBusMap.get(String.valueOf(i)+"C")=="No"){
-                            ReturnBusMap.put(String.valueOf(i) + "C", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "C");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one2");
-                        } else if (ReturnBusMap.get(String.valueOf(i)+"D")=="No") {
-                            ReturnBusMap.put(String.valueOf(i) + "D", "Yes");
-                            noOfSheets.add(String.valueOf(i) + "D");
-                            passengerTicketDTO.getNoOfSheets(noOfSheets);
-                            count++;
-                            System.out.println("one3");
-                        }
-
-                    }
-                }
-
-
-
-
-
-                totalPrice = getTotalPrice(x, Holt);
-
-                passengerTicketDTO.setTotalPrice(totalPrice);
-                //passengerTicketDTO.setTicketId(UUID.randomUUID());
-            }else{
-                System.out.println(count + " not available "+countFree+" sheets"+x);
-            }
-
-
-
-
-
-//        for(int i=0;i<=10;i++){
-//            for(int j=1;j<=4;j++){
-//                if(BusMap.get(String.valueOf(i)+"A")=="No")
-//                    countFree++;
-//                else if(BusMap.get(String.valueOf(i)+"B")=="No")
-//                    countFree++;
-//                else if(BusMap.get(String.valueOf(i)+"C")=="No")
-//                    countFree++;
-//                else if(BusMap.get(String.valueOf(i)+"D")=="No")
-//                    countFree++;
-//            }
-//        }
-
-
-
-
-
-
-            return passengerTicketDTO;
+            throw new NotFoundException("No found location");
         }
 
+    }
+
+    private PassengerTicketDTO getPassengerTicketDTO(PassengerTicketDTO passengerTicketDTO, ArrayList<String> noOfSheets, int x, String holt) {
+        int totalPrice;
+        String y = "";
+        for (String i : noOfSheets) {
+            y = y + i + "  ";
+        }
+        passengerTicketDTO.setNoOfSheets(y);
+
+        totalPrice = getTotalPrice(x, holt);
+
+        passengerTicketDTO.setTotalPrice(totalPrice);
+        passengerTicketDTO.setTicketId(UUID.randomUUID());
+        return passengerTicketDTO;
     }
 
     private int getTotalPrice(int x, String holt) {
